@@ -40,4 +40,10 @@ public class ClientController {
         return ResponseEntity.created(uri).body(clientInBody);
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Client> findClientById(@PathVariable Long id){
+        Client client = clientRepository.findById(id).get();
+        return ResponseEntity.ok(client);
+    }
+
 }
