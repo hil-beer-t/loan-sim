@@ -1,0 +1,3 @@
+INSERT INTO tb_client(address,cpf,email, income, name, password, rg) VALUES ('Rua Quatro','54090795072','tulio@gmail.com',13348.74,'Túlio','123322','16.324.596-2');
+INSERT INTO tb_client(address,cpf,email, income, name, password, rg) VALUES ('Rua Cinco','54090795071','vexana@gmail.com',13228.74,'Vexana','123311','16.324.596-1');
+INSERT INTO tb_client(address,cpf,email, income, name, password, rg) VALUES ('Rua Três','54090795079','maria@gmail.com',1348.74,'Maria','123321','16.324.596-4');
