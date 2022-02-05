@@ -35,6 +35,10 @@ public class Client {
     public Client() {
     }
 
+    public List<LoanSim> getLoanSims() {
+        return loanSims;
+    }
+
     public String getName() {
         return name;
     }

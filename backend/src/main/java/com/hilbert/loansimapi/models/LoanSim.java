@@ -36,6 +36,14 @@ public class LoanSim {
     public LoanSim() {
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
     public String getCod() {
         return cod;
     }
