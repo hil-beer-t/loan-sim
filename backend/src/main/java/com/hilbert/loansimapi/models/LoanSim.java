@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "loan_sim")
+@Table(name = "tb_loan_sim")
 public class LoanSim {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
