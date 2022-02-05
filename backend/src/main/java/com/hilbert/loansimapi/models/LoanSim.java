@@ -1,5 +1,7 @@
 package com.hilbert.loansimapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.Instant;
 
@@ -25,6 +27,11 @@ public class LoanSim {
     private Integer bestDay;
 
     private Long value;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
 
     public LoanSim() {
     }

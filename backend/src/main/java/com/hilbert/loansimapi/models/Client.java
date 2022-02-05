@@ -1,6 +1,8 @@
 package com.hilbert.loansimapi.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "client")
@@ -26,6 +28,9 @@ public class Client {
     private String address;
 
     private String password;
+
+    @OneToMany(mappedBy = "client" )
+    private List<LoanSim> loanSims = new ArrayList<>();
 
     public Client() {
     }
