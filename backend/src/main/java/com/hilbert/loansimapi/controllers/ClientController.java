@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/clients")
@@ -53,10 +54,28 @@ public class ClientController {
         return ResponseEntity.ok(client);
     }
 
+    // The entity's previous simulations are kept
+    @PutMapping(value = "/{clientId}")
+    public ResponseEntity<Client> updateClient(@RequestBody Client clientDetailsInBody, @PathVariable Long clientId){
+        Client clientToBeUpdated = clientRepository.findById(clientId).get();
+        clientToBeUpdated.setName(clientDetailsInBody.getName());
+        clientToBeUpdated.setEmail(clientDetailsInBody.getEmail());
+        clientToBeUpdated.setIncome(clientDetailsInBody.getIncome());
+        clientToBeUpdated.setCpf(clientDetailsInBody.getCpf());
+        clientToBeUpdated.setRg(clientDetailsInBody.getRg());
+        clientToBeUpdated.setAddress(clientDetailsInBody.getAddress());
+
+        // TODO: ENCODE PASSWORD -> clientInBody.setPassword(passwordEncoder.encode(clientInBody.getPassword()));
+        clientToBeUpdated.setPassword(clientDetailsInBody.getPassword());
+        clientRepository.save(clientToBeUpdated);
+
+        return ResponseEntity.ok().body(clientToBeUpdated);
+    }
+
     @PostMapping(value = "/{clientId}/create-loan-sim")
     public ResponseEntity<LoanSim> createLoanSim(@RequestBody LoanSim LoanSimInBody, @PathVariable Long clientId){
 
-        // TODO: autenticate
+        // TODO: authenticate
 
         Client client = clientRepository.findById(clientId).get();
         GenerateLoanSimCod generateCod = new GenerateLoanSimCod(client.getId());
