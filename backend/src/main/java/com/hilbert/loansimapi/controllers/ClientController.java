@@ -15,7 +15,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 @RestController
 @RequestMapping(value = "/clients")
@@ -104,6 +105,27 @@ public class ClientController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{clientId}")
                 .buildAndExpand(LoanSimInBody.getId()).toUri();
         return ResponseEntity.created(uri).body(LoanSimInBody);
+    }
+
+    // ONLY CHANGES STATUS TO DELETED
+    @PatchMapping(value = "{clientId}/delete-loan-sim/{loanSimId}")
+    public ResponseEntity<Client> changeLoanSimStatusToDeleted(@PathVariable Long clientId,@PathVariable Long loanSimId){
+
+        Client clientToBePatched = clientRepository.findById(clientId).get();
+        List<LoanSim> loanSims = clientToBePatched.getLoanSims();
+
+        // TODO: if clientToPatched has any loan simulation with status BEING_PAID[...] or SIGNED[...], MUST NOT continue
+
+        // Filters all loan simulations in clientToBePatched with id equals to loanSimId
+        // How we sure that JPA will never set the same ID, we can do this: 
+        Predicate<LoanSim> byId = loanSim -> Objects.equals(loanSim.getId(), loanSimId);
+        List<LoanSim> LoanSimsFilterResult = loanSims.stream().filter(byId).toList();
+
+        LoanSim loanSimToBePatched = LoanSimsFilterResult.get(0);
+        loanSimToBePatched.setStatus(LoanStatus.DELETED);
+
+        clientRepository.save(clientToBePatched);
+        return ResponseEntity.ok().body(clientToBePatched);
     }
 
 }
