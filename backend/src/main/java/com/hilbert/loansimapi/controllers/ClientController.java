@@ -8,6 +8,7 @@ import com.hilbert.loansimapi.repositories.LoanSimRepository;
 import com.hilbert.loansimapi.utils.GenerateLoanSimCod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -67,9 +68,25 @@ public class ClientController {
 
         // TODO: ENCODE PASSWORD -> clientInBody.setPassword(passwordEncoder.encode(clientInBody.getPassword()));
         clientToBeUpdated.setPassword(clientDetailsInBody.getPassword());
+
+        // TODO: if clientToBeUpdated has any loan simulation with status BEING_PAID[...] or SIGNED[...], MUST NOT continue
         clientRepository.save(clientToBeUpdated);
 
         return ResponseEntity.ok().body(clientToBeUpdated);
+    }
+
+    @Transactional
+    @DeleteMapping(value = "/{clientId}")
+    public ResponseEntity deleteClient(@PathVariable Long clientId){
+        Client clientToBeDeleted = clientRepository.findById(clientId).get();
+        clientRepository.deleteById(clientId);
+
+        // TODO: if clientToBeDeleted has any loan simulation with status BEING_PAID[...] or SIGNED[...], MUST NOT continue
+        if(clientToBeDeleted.getLoanSims().size() > 0 ){
+            loanSimRepository.deleteById(clientId);
+        }
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/{clientId}/create-loan-sim")
