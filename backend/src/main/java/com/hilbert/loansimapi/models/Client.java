@@ -1,5 +1,7 @@
 package com.hilbert.loansimapi.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,8 @@ public class Client {
 
     private String address;
 
+    // No password in view
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @OneToMany(mappedBy = "client" )
