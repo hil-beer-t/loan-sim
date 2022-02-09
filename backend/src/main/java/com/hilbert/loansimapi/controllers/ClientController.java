@@ -8,6 +8,7 @@ import com.hilbert.loansimapi.repositories.LoanSimRepository;
 import com.hilbert.loansimapi.utils.GenerateLoanSimCod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,6 +29,12 @@ public class ClientController {
     @Autowired
     LoanSimRepository loanSimRepository;
 
+    private final PasswordEncoder encoder;
+
+    public ClientController(PasswordEncoder encoder) {
+        this.encoder = encoder;
+    }
+
     @GetMapping
     public ResponseEntity<List<Client>> getAllClients(){
         List<Client> clients = new ArrayList<>(clientRepository.findAll());
@@ -44,6 +51,7 @@ public class ClientController {
         }
 
         // TODO: ENCODE PASSWORD -> clientInBody.setPassword(passwordEncoder.encode(clientInBody.getPassword()));
+        clientInBody.setPassword(encoder.encode(clientInBody.getPassword()));
         clientInBody = clientRepository.save(clientInBody);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(clientInBody.getId()).toUri();
@@ -76,6 +84,7 @@ public class ClientController {
         return ResponseEntity.ok().body(clientToBeUpdated);
     }
 
+    // TODO: Raw use of parameterized class 'ResponseEntity'
     @Transactional
     @DeleteMapping(value = "/{clientId}")
     public ResponseEntity deleteClient(@PathVariable Long clientId){
@@ -92,9 +101,7 @@ public class ClientController {
 
     @PostMapping(value = "/{clientId}/create-loan-sim")
     public ResponseEntity<LoanSim> createLoanSim(@RequestBody LoanSim LoanSimInBody, @PathVariable Long clientId){
-
-        // TODO: authenticate
-
+        
         Client client = clientRepository.findById(clientId).get();
         GenerateLoanSimCod generateCod = new GenerateLoanSimCod(client.getId());
         LoanSimInBody.setCod(generateCod.getCod());

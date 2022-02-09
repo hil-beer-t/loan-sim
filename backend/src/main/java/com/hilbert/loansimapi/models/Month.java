@@ -60,5 +60,5 @@ public enum Month {
      * The singleton instance for the month of December with 31 days.
      * This has the numeric value of {@code 11}.
      */
-    DECEMBER;
+    DECEMBER
 }
