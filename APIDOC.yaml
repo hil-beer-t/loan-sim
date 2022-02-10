@@ -1,0 +1,265 @@
+openapi: 3.0.0
+info:
+  version: 0.0.3
+  title: Loan Simulator
+  description: Simulate a loan for a potential client
+
+  contact:
+    name: Hilbert Digenio
+    url: https://github.com/hil-beer-t
+    email: hilbert.digenio.dev@gmail.com
+
+servers:
+  - description: local host
+    url: http://localhost:8080
+
+paths:
+
+  /clients:
+    post:
+      summary: Create a client
+      description: ""
+      tags:
+        - "Client"
+      operationId: insertOneClient
+      requestBody:
+        description: Client data for creation
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/client'
+      responses:
+        "201":
+          description: CREATED
+        "418":
+          description: I'M A TEAPOT
+
+    get:
+      summary: Get all clients
+      tags:
+        - "Client"
+      description: Client ROLE SHOULD NOT access this route.
+      operationId: getAllClients
+      responses:
+        "200":
+          description: Ok. It contains entities in response.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/client'
+        "400":
+          description: BAD REQUEST
+        "401":
+          description: UNAUTH
+      security:
+        - bearerAuth: [ ]
+
+  /clients/{id}:
+    get:
+      summary: Find one client
+      description: Find one client by id
+      tags:
+        - "Client"
+      operationId: findClientById
+      parameters:
+        - name: id
+          description: client id
+          schema:
+            type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Ok. It contains entities in response.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/client'
+      security:
+        - bearerAuth: [ ]
+
+    put:
+      summary: Update one client
+      description: Update one client by id
+      tags:
+        - "Client"
+      operationId: updateClient
+      parameters:
+        - name: id
+          description: client id
+          schema:
+            type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Ok. It contains entities in response.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/client'
+      security:
+        - bearerAuth: []
+
+    delete:
+      summary: Delete a client
+      description: Delete one client by id
+      tags:
+        - "Client"
+      operationId: deleteClient
+      parameters:
+        - name: id
+          description: client id
+          schema:
+            type: string
+          in: path
+          required: true
+
+      responses:
+        "204":
+          description: Done with no entity in response.
+      security:
+        - bearerAuth: [ ]
+
+  /clients/{clientId}/create-loan-sim:
+    post:
+      summary: Create a loan simulation
+      description: Create a loan simulation by Client Id
+      tags:
+        - "Client"
+      operationId: createLoanSim
+      parameters:
+        - name: clientId
+          description: client id
+          schema:
+            type: string
+          in: path
+          required: true
+      requestBody:
+        description: Loan data for creation
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loan-sim'
+      responses:
+        "201":
+          description: CREATED
+      security:
+        - bearerAuth: []
+
+  /clients/{clientId}/delete-loan-sim/{loanSimId}:
+    patch:
+      summary: Patch loan simulation status to DELETED
+      description: Patch client's loan simulation status to DELETED by client/loan-sim id
+      tags:
+        - "Client"
+      operationId: changeLoanSimStatusToDeleted
+      parameters:
+        - name: clientId
+          description: client id
+          schema:
+            type: string
+          in: path
+          required: true
+
+        - name: loanSimId
+          description: loan simulation id
+          schema:
+            type: string
+          in: path
+          required: true
+      requestBody:
+        description: Loan data for creation
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loan-sim'
+      responses:
+        "201":
+          description: CREATED
+      security:
+        - bearerAuth: [ ]
+
+components:
+  schemas:
+    client:
+      description: This is a Client model
+      type: object
+      required:
+        - client_id
+        - cpf
+        - rg
+        - name
+        - email
+        - status
+        - income
+        - password
+        - address
+      properties:
+        client_id:
+          type: integer
+          format: int32
+        cpf:
+          type: string
+        rg:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        status:
+          type: string
+        income:
+          type: integer
+        password:
+          type: string
+          format: password
+          writeOnly: true
+        address:
+          type: string
+        loan_id:
+          type: integer
+          format: int32
+
+    loan-sim:
+      description: This is a Loan simulation model
+      type: object
+      required:
+        - loan_id
+        - value
+        - num_months
+        - status
+        - client_id
+      properties:
+        loan_id:
+          type: integer
+          format: int32
+        value:
+          type: integer
+          format: int64
+        num_months:
+          type: integer
+          format: int32
+        date:
+          type: string
+          format: date
+        status:
+          type: string
+        client_id:
+          type: integer
+          format: int32
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
