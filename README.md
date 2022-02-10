@@ -1,6 +1,5 @@
 # Loan Simulator
 <img src="https://img.shields.io/badge/in%20development-v0.0.3-green">
-<img src="https://img.shields.io/badge/branch-main-orange">
 <img src="https://img.shields.io/badge/backend-done-red">
 <img src="https://img.shields.io/badge/OpenAPI-v3.0.1-green">
 
