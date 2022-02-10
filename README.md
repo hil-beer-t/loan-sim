@@ -25,7 +25,10 @@ Backend
 * PostgreSQL and PgAdmin (only in [dev] profile)
 * Maven
 
-### Back End
+Frontend
+* Yarn
+
+### Backend
 __Inside '/backend' directory__
 
 __Install dependencies__
